@@ -17,6 +17,12 @@ end pong_control;
 
 architecture cooper of pong_control is
 
+--Constants
+constant ball_width: integer := 10;
+constant paddle_height: integer :=50;
+constant screen_height: integer := 480;
+constant screen_width: integer := 640;
+
 --Ball signals
 signal posX, posX_next, posY, posY_next, posPad, posPad_next : unsigned(10 downto 0);
 type states is (pos, neg, over);
@@ -68,14 +74,14 @@ begin
 	posY_next <= posY + 1 when (y_reg = pos) and (count_reg=1000) else
 					 posY - 1 when (count_reg=1000) else
 					 posY;
-	posPad_next <= posPad + 10 when down='1' and posPad<430 and count_reg=1000 else
-						posPad -10 when up='1' and posPad>10 and count_reg=1000 else
+	posPad_next <= posPad + 1 when down='1' and posPad<screen_height-paddle_height and (count_reg mod 100=0) else
+						posPad -1 when up='1' and posPad>0 and (count_reg mod 100 =0) else
 						posPad;
-	x_next<= pos when posX<15 else
-				neg when posX>625 else
+	x_next<= pos when posX<=ball_width else
+				neg when posX>=screen_width-ball_width else
 				x_reg;
-	y_next<= pos when posY<15 else
-				neg when posY>455 else
+	y_next<= pos when posY<=ball_width else
+				neg when posY>=screen_height-ball_width else
 				y_reg;
 			
 	--Output logic
