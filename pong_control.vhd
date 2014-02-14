@@ -97,7 +97,7 @@ begin
 	
 	posY_next <= posy when y_reg = over else
 					 posY + 1  when ((y_reg = pos) and (count_reg=1000))or ( y_reg=pos and faster ='1' and (count_reg mod 200 =0)) else
-					 posY - 1  when (count_reg=1000 and y_reg=neg) or (faster='1' and (count_reg mod 500 =0) and y_reg=neg) else
+					 posY - 1  when (count_reg=1000 and y_reg=neg) or (faster='1' and (count_reg mod 200 =0) and y_reg=neg) else
 					 posY;
 	posPad_next <= posPad when x_reg=over or y_reg=over else
 						posPad + 1 when down='1' and posPad<screen_height-paddle_height and (count_reg mod 100=0) else
