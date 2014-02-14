@@ -19,7 +19,18 @@ end pong_pixel_gen;
 
 architecture cooper of pong_pixel_gen is
 
+signal visible : std_logic;
+
 begin
+
+visible <= '0' when (column<=200 and column>=160) and (row>=100 and row<=380) else
+			  '0' when (column<=260 and column>=200) and (row>=100 and row<=130) else
+			  '0' when (column<=260 and column>=200) and (row>=230 and row<=260) else
+			  '0' when (column<=300 and column>=260) and (row>=100 and row<=380) else
+		     '0' when (column<=400 and column>=360) and (row>=100 and row<=380) else
+			  '0' when (column<=500 and column>=400) and (row>=100 and row<=130) else
+			  '0'  when (column<=500 and column>=400) and (row>=230 and row<=260) else
+			  '1';
 
 b<="00000000"  when blank ='1' else
 	"11111111" when (column<=200 and column>=160) and (row>=100 and row<=380) else
@@ -30,11 +41,13 @@ b<="00000000"  when blank ='1' else
 	"11111111" when (column<=500 and column>=400) and (row>=100 and row<=130) else
 	"11111111" when (column<=500 and column>=400) and (row>=230 and row<=260) else
 	"00000000";
+
 r<= "00000000" when blank ='1' else
 	 "11111111" when (column<=10) and (row>=paddle_y and row<=paddle_y+50) else
 	 "00000000";
+	 
 g <="00000000" when blank='1' else
-	 "11111111" when (column>=ball_x-10 and column<=ball_x+10) and(row<=ball_y+10 and row>=ball_y-10) else
+	 "11111111" when (column>=ball_x-10 and column<=ball_x+10) and(row<=ball_y+10 and row>=ball_y-10 and visible='1') else
 	 "00000000";
 
 end cooper;
