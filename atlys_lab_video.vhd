@@ -1,4 +1,7 @@
-
+--Changes since last commit
+-- Instantiate pong control
+-- Create signals for wires and map the button up/down to the ucf
+--Implemented the logic for the ball to bounce around the screen.  However, it seems to be moving way too quickly
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
@@ -9,8 +12,8 @@ entity atlys_lab_video is
     port ( 
              clk   : in  std_logic; -- 100 MHz
              reset : in  std_logic;
-		--		 switch1: in std_logic;
-	--			 switch2: in std_logic;
+		    	 up: in std_logic;
+	    		 down: in std_logic;
              tmds  : out std_logic_vector(3 downto 0);
              tmdsb : out std_logic_vector(3 downto 0)
          );
@@ -23,6 +26,7 @@ signal row, column: unsigned(10 downto 0);
 signal v_sync, h_sync: std_logic;
 signal pixel_clk, serialize_clk, serialize_clk_n: std_logic;
 signal v_completed, blank: std_logic;
+signal ball_x, ball_y, paddle_y: unsigned (10 downto 0);
 
 component vga_sync
     port ( clk         : in  std_logic;
@@ -85,13 +89,25 @@ begin
 					row=> row,
 					column=> column,
 					blank=> blank,
-					ball_x => "00000000000",
-					ball_y => "00000000000",
-					paddle_y => "00000000000",
+					ball_x => ball_x,
+					ball_y => ball_y,
+					paddle_y => paddle_y,
 					r=>red,
 					g=>green,
 					b=>blue
 					);
+					
+	 inst_pong_control: entity work.pong_control(cooper)
+	 port map(
+			  clk => pixel_clk,
+           reset => reset,
+           up  => up,
+           down => down,
+           v_completed => v_completed,
+           ball_x => ball_x,
+           ball_y => ball_y,
+           paddle_y => paddle_y
+	 );
 
     -- Convert VGA signals to HDMI (actually, DVID ... but close enough)
     inst_dvid: entity work.dvid

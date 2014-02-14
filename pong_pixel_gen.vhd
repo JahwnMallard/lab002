@@ -34,7 +34,7 @@ r<= "00000000" when blank ='1' else
 	 "11111111" when (column<=10) and (row>=paddle_y and row<=paddle_y+50) else
 	 "00000000";
 g <="00000000" when blank='1' else
-	 "11111111" when (column>=ball_x-30 and column<=ball_x+30) and (row<=ball_y+30 and row>=ball_y-30) else
+	 "11111111" when (column>=ball_x-10 and column<=ball_x+10) and(row<=ball_y+10 and row>=ball_y-10) else
 	 "00000000";
 
 end cooper;

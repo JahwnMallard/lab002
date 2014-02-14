@@ -3,8 +3,8 @@ VCCAUX = 3.3;
 NET "clk" LOC = "L15" | PERIOD = 100 MHz;
 
 NET "reset" LOC = "F5" | IOSTANDARD = LVCMOS33;
-#net "switch1" LOC = "E4" | IOSTANDARD = LVCMOS33;
-#net "switch2" LOC = "T5" | IOSTANDARD = LVCMOS33;
+net "up" LOC = "N4" ;
+net "down" LOC = "P3" ;
 NET "TMDS(0)"      LOC = "D8" | IOSTANDARD = TMDS_33 ; # Blue
 NET "TMDSB(0)"  LOC = "C8" | IOSTANDARD = TMDS_33 ;
 NET "TMDS(1)"      LOC = "C7" | IOSTANDARD = TMDS_33 ; # Red
