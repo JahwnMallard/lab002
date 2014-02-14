@@ -68,21 +68,28 @@ begin
 	end process;
 	
 	--Next state logic
-   posX_next <= posX + 1 when (x_reg = pos) and (count_reg=1000) else
+   posX_next <= posX when x_reg = over else
+					 posX + 1 when (x_reg = pos) and (count_reg=1000) else
 					 posX - 1 when (count_reg=1000) else
 					 posX;
 	
-	posY_next <= posY + 1 when (y_reg = pos) and (count_reg=1000) else
+	posY_next <= posy when y_reg = over else
+					 posY + 1 when (y_reg = pos) and (count_reg=1000) else
 					 posY - 1 when (count_reg=1000) else
 					 posY;
-	posPad_next <= posPad + 1 when down='1' and posPad<screen_height-paddle_height and (count_reg mod 100=0) else
+	posPad_next <= posPad when x_reg=over or y_reg=over else
+						posPad + 1 when down='1' and posPad<screen_height-paddle_height and (count_reg mod 100=0) else
 						posPad -1 when up='1' and posPad>0 and (count_reg mod 100 =0) else
 						posPad;
-	x_next<= pos when ((posY<posPad+paddle_height) and (posY>posPad)) and (posX-ball_width<paddle_width) else
+	x_next<= over when x_reg=over else
+				over when ((posY+ball_width<posPad) and posX-ball_width<=1) or ((posY-ball_width>posPad+paddle_height) and posX-ball_width<=1) else
+				pos when ((posY<posPad+paddle_height) and (posY>posPad)) and (posX-ball_width<paddle_width) else
 				pos when posX<=ball_width else
 				neg when posX>=screen_width-ball_width else
 				x_reg;
-	y_next<= pos when posY<=ball_width else
+	y_next<= over when y_reg=over else
+				over when x_next=over or x_reg=over else
+				pos when posY<=ball_width else
 				neg when posY>=screen_height-ball_width else
 				y_reg;
 			
