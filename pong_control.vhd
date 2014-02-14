@@ -32,7 +32,7 @@ type states is (pos, neg, over);
 signal x_reg, x_next: states;
 signal y_reg, y_next: states;
 signal count_reg, count_next: unsigned(15 downto 0);
-signal randomX, randomY: unsigned(2 downto 0);
+signal randomY: unsigned(2 downto 0);
 
 begin
 	
@@ -69,33 +69,35 @@ begin
 		end if;
 	end process;
 	
-	--None random random number register
-	process(clk, reset)
-	begin
-		if(reset='1') then
-			randomX <= "000";
-			randomY <= "000";
-		elsif(rising_edge(clk)) then
-			if (random = '1') then
-				if (x_next /= x_reg) then
-					randomX <= randomX +7 mod 4;
-				end if;
-				if(y_next /= y_reg) then
-					randomY <= randomY +5 mod 4;
-				end if;
-			end if;
-		end if;
-	end process;
+--	--None random random number register
+--	process(clk, reset)
+--	begin
+--		if(reset='1') then
+--			randomY <= "000";
+--		elsif(rising_edge(clk)) then
+--			if (random = '1') then
+--				if (x_next /= x_reg and posX_next>posX) then
+--					if(ball_y < paddle_y-paddle_height/4) then
+--						randomY <= 1;
+--					elsif(ball_y>= paddle_y-paddle_height/4 and ball_y<=paddle_y+paddle_height/4) then
+--						randomY <= 0;
+--					else
+--						randomY <= -2;
+--					end if;
+--				end if;
+--			end if;
+--		end if;
+--	end process;
 	
 	--Next position logic
    posX_next <= posX when x_reg = over else
-					 posX + 1 + randomX when ((x_reg = pos) and (count_reg=1000)) or ( x_reg=pos and faster ='1' and (count_reg mod 500 =0)) else
-					 posX - 1 - randomX when (count_reg=1000 and x_reg=neg) or (faster='1' and (count_reg mod 500 =0) and y_reg=neg) else
+					 posX + 1  when ((x_reg = pos) and (count_reg=1000)) or ( x_reg=pos and faster ='1' and (count_reg mod 200 =0)) else
+					 posX - 1  when (count_reg=1000 and x_reg=neg) or (faster='1' and (count_reg mod 500 =0) and y_reg=neg) else
 					 posX;
 	
 	posY_next <= posy when y_reg = over else
-					 posY + 1 + randomX when ((y_reg = pos) and (count_reg=1000))or ( y_reg=pos and faster ='1' and (count_reg mod 500 =0)) else
-					 posY - 1 - randomX when (count_reg=1000 and y_reg=neg) or (faster='1' and (count_reg mod 500 =0) and y_reg=neg) else
+					 posY + 1  when ((y_reg = pos) and (count_reg=1000))or ( y_reg=pos and faster ='1' and (count_reg mod 200 =0)) else
+					 posY - 1  when (count_reg=1000 and y_reg=neg) or (faster='1' and (count_reg mod 500 =0) and y_reg=neg) else
 					 posY;
 	posPad_next <= posPad when x_reg=over or y_reg=over else
 						posPad + 1 when down='1' and posPad<screen_height-paddle_height and (count_reg mod 100=0) else
@@ -110,6 +112,8 @@ begin
 				x_reg;
 	y_next<= over when y_reg=over else
 				over when x_next=over or x_reg=over else
+				neg when posX_next-ball_width<paddle_width and random='1' and posY<posPad+paddle_height/2 else
+				pos when posX_next-ball_width<paddle_width and random='1' and posY>=posPad+paddle_height/2 else
 				pos when posY<=ball_width else
 				neg when posY>=screen_height-ball_width else
 				y_reg;
