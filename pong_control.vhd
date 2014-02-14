@@ -18,11 +18,11 @@ end pong_control;
 architecture cooper of pong_control is
 
 --Ball signals
-signal posX, posX_next, posY, posY_next : unsigned(10 downto 0);
+signal posX, posX_next, posY, posY_next, posPad, posPad_next : unsigned(10 downto 0);
 type states is (pos, neg, over);
 signal x_reg, x_next: states;
 signal y_reg, y_next: states;
-signal count_reg, count_next: unsigned(10 downto 0);
+signal count_reg, count_next: unsigned(15 downto 0);
 
 begin
 	
@@ -43,13 +43,29 @@ begin
 		end if;
 	end process;
 	
+		
+	count_next <= count_reg + 1;
+	process(clk, reset)
+	begin
+		if(reset='1') then
+			count_reg <= (others =>'1');
+		elsif(rising_edge(clk) and v_completed='1') then
+			if(count_reg=1001) then
+				count_reg <= (others=>'1');
+			else
+				count_reg <= count_next;
+			end if;
+		end if;
+	end process;
 	
 	--Next state logic
-   posX_next <= posX + 1 when (x_reg = pos) else
-					 posX - 1;
+   posX_next <= posX + 1 when (x_reg = pos) and (count_reg=1000) else
+					 posX - 1 when (count_reg=1000) else
+					 posX;
 	
-	posY_next <= posY + 1 when (y_reg = pos) else
-					 posY - 1;
+	posY_next <= posY + 1 when (y_reg = pos) and (count_reg=1000) else
+					 posY - 1 when (count_reg=1000) else
+					 posY;
 	x_next<= pos when posX<15 else
 				neg when posX>625 else
 				x_reg;
