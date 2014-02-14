@@ -15,6 +15,7 @@ entity atlys_lab_video is
 		    	 up: in std_logic;
 	    		 down: in std_logic;
 				 faster: in std_logic;
+				 random: in std_logic;
              tmds  : out std_logic_vector(3 downto 0);
              tmdsb : out std_logic_vector(3 downto 0)
          );
@@ -105,6 +106,7 @@ begin
            up  => up,
            down => down,
 			  faster => faster,
+			  random => random,
            v_completed => v_completed,
            ball_x => ball_x,
            ball_y => ball_y,
