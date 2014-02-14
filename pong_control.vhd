@@ -53,7 +53,7 @@ begin
 			count_reg <= (others =>'1');
 		elsif(rising_edge(clk) and v_completed='1') then
 			if(count_reg=1001) then
-				count_reg <= (others=>'1');
+				count_reg <= (others=>'0');
 			else
 				count_reg <= count_next;
 			end if;
