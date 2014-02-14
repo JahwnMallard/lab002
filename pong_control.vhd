@@ -34,12 +34,14 @@ begin
 			y_reg <= pos;
 			posX<="00111100000";
 			posY<="00000010000";
+			posPad<="00000000000";
 			--padd_y <= (others => '1');
 		elsif (rising_edge(clk)) then
 			x_reg <= x_next;
 			y_reg <= y_next;
 			posX <= posX_next;
 			posY <= posY_next;
+			posPad<= posPad_next;
 		end if;
 	end process;
 	
@@ -66,17 +68,20 @@ begin
 	posY_next <= posY + 1 when (y_reg = pos) and (count_reg=1000) else
 					 posY - 1 when (count_reg=1000) else
 					 posY;
+	posPad_next <= posPad + 10 when down='1' and posPad<430 and count_reg=1000 else
+						posPad -10 when up='1' and posPad>10 and count_reg=1000 else
+						posPad;
 	x_next<= pos when posX<15 else
 				neg when posX>625 else
 				x_reg;
 	y_next<= pos when posY<15 else
 				neg when posY>455 else
 				y_reg;
-				
+			
 	--Output logic
 	ball_x <= posX;
 	ball_y <= posY;
-	paddle_y <= "00000000000";
+	paddle_y <= posPad;
 
 
 end cooper;
