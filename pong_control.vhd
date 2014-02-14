@@ -78,10 +78,10 @@ begin
 		elsif(rising_edge(clk)) then
 			if (random = '1') then
 				if (x_next /= x_reg) then
-					randomX <= randomX +1 mod 3;
+					randomX <= randomX +7 mod 4;
 				end if;
 				if(y_next /= y_reg) then
-					randomY <= randomY +1 mod 4;
+					randomY <= randomY +5 mod 4;
 				end if;
 			end if;
 		end if;
