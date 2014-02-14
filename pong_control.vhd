@@ -9,6 +9,7 @@ entity pong_control is
            reset : in  STD_LOGIC;
            up : in  STD_LOGIC;
            down : in  STD_LOGIC;
+			  faster: in STD_LOGIC;
            v_completed : in  STD_LOGIC;
            ball_x : out  unsigned (10 downto 0);
            ball_y : out  unsigned (10 downto 0);
@@ -69,13 +70,13 @@ begin
 	
 	--Next state logic
    posX_next <= posX when x_reg = over else
-					 posX + 1 when (x_reg = pos) and (count_reg=1000) else
-					 posX - 1 when (count_reg=1000) else
+					 posX + 1 when ((x_reg = pos) and (count_reg=1000)) or ( x_reg=pos and faster ='1' and (count_reg mod 500 =0)) else
+					 posX - 1 when (count_reg=1000 and x_reg=neg) or (faster='1' and (count_reg mod 500 =0) and y_reg=neg) else
 					 posX;
 	
 	posY_next <= posy when y_reg = over else
-					 posY + 1 when (y_reg = pos) and (count_reg=1000) else
-					 posY - 1 when (count_reg=1000) else
+					 posY + 1 when ((y_reg = pos) and (count_reg=1000))or ( y_reg=pos and faster ='1' and (count_reg mod 500 =0)) else
+					 posY - 1 when (count_reg=1000 and y_reg=neg) or (faster='1' and (count_reg mod 500 =0) and y_reg=neg) else
 					 posY;
 	posPad_next <= posPad when x_reg=over or y_reg=over else
 						posPad + 1 when down='1' and posPad<screen_height-paddle_height and (count_reg mod 100=0) else
