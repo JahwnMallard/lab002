@@ -22,6 +22,7 @@ constant ball_width: integer := 10;
 constant paddle_height: integer :=50;
 constant screen_height: integer := 480;
 constant screen_width: integer := 640;
+constant paddle_width: integer :=10;
 
 --Ball signals
 signal posX, posX_next, posY, posY_next, posPad, posPad_next : unsigned(10 downto 0);
@@ -77,7 +78,8 @@ begin
 	posPad_next <= posPad + 1 when down='1' and posPad<screen_height-paddle_height and (count_reg mod 100=0) else
 						posPad -1 when up='1' and posPad>0 and (count_reg mod 100 =0) else
 						posPad;
-	x_next<= pos when posX<=ball_width else
+	x_next<= pos when ((posY<posPad+paddle_height) and (posY>posPad)) and (posX-ball_width<paddle_width) else
+				pos when posX<=ball_width else
 				neg when posX>=screen_width-ball_width else
 				x_reg;
 	y_next<= pos when posY<=ball_width else
