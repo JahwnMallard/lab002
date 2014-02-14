@@ -32,7 +32,6 @@ type states is (pos, neg, over);
 signal x_reg, x_next: states;
 signal y_reg, y_next: states;
 signal count_reg, count_next: unsigned(15 downto 0);
-signal randomY: unsigned(2 downto 0);
 
 begin
 	
@@ -68,31 +67,11 @@ begin
 			end if;
 		end if;
 	end process;
-	
---	--None random random number register
---	process(clk, reset)
---	begin
---		if(reset='1') then
---			randomY <= "000";
---		elsif(rising_edge(clk)) then
---			if (random = '1') then
---				if (x_next /= x_reg and posX_next>posX) then
---					if(ball_y < paddle_y-paddle_height/4) then
---						randomY <= 1;
---					elsif(ball_y>= paddle_y-paddle_height/4 and ball_y<=paddle_y+paddle_height/4) then
---						randomY <= 0;
---					else
---						randomY <= -2;
---					end if;
---				end if;
---			end if;
---		end if;
---	end process;
-	
+
 	--Next position logic
    posX_next <= posX when x_reg = over else
 					 posX + 1  when ((x_reg = pos) and (count_reg=1000)) or ( x_reg=pos and faster ='1' and (count_reg mod 200 =0)) else
-					 posX - 1  when (count_reg=1000 and x_reg=neg) or (faster='1' and (count_reg mod 500 =0) and y_reg=neg) else
+					 posX - 1  when (count_reg=1000 and x_reg=neg) or (faster='1' and (count_reg mod 200 =0) and x_reg=neg) else
 					 posX;
 	
 	posY_next <= posy when y_reg = over else
@@ -106,16 +85,16 @@ begin
 	--Next state logic				
 	x_next<= over when x_reg=over else
 				over when ((posY+ball_width<posPad) and posX-ball_width<=1) or ((posY-ball_width>posPad+paddle_height) and posX-ball_width<=1) else
+				pos when posX<=ball_width else
 				neg when posX>=screen_width-ball_width else
 				pos when ((posY<posPad+paddle_height) and (posY>posPad)) and (posX-ball_width<paddle_width) else
-				pos when posX<=ball_width else
 				x_reg;
 	y_next<= over when y_reg=over else
 				over when x_next=over or x_reg=over else
-				neg when posX_next-ball_width<paddle_width and random='1' and posY<posPad+paddle_height/2 else
-				pos when posX_next-ball_width<paddle_width and random='1' and posY>=posPad+paddle_height/2 else
 				pos when posY<=ball_width else
 				neg when posY>=screen_height-ball_width else
+				neg when posX_next-ball_width<paddle_width and random='1' and posY<posPad+paddle_height/2 else
+				pos when posX_next-ball_width<paddle_width and random='1' and posY>=posPad+paddle_height/2 else
 				y_reg;
 			
 	--Output logic
