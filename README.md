@@ -10,6 +10,8 @@ The purpose of this lab was to use the VGA driver previously implemented in orde
 
 ##Implementation
 For the Pong control module that needed to be implemented, there were and always are two main sections.  The decision to attempt this using mostly combinational logic significantly reduced the process statement side of the project.
+###Diagram
+![Block Diagram](images/BlockDiagram.png)
 ###State Machines/Registers
 For this project, no state machines were used.  The only implementation of memory was setting each of the different elements to the output of the combinational logic on the rising edge of the clock.  An example follows:
 ```vhdl
