@@ -8,6 +8,8 @@ The purpose of this lab was to use the VGA driver previously implemented in orde
  4. A switch to increase the speed of the ball
  5. Ball bounce determined from the position of the paddle it hits 
 
+##Approach
+
 ##Implementation
 For the Pong control module that needed to be implemented, there were and always are two main sections.  The decision to attempt this using mostly combinational logic significantly reduced the process statement side of the project.
 ###Diagram
